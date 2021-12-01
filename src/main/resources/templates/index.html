@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html lang="pl"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Witaj KFC</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/main2.css">
+    <link rel="stylesheet" href="styles/mainL.css">
+</head>
+
+<body class="bg-white">
+<div class="container-flow">
+    <div class="row">
+        <div class="col ml-3">
+            <div class="row">
+                <img src="img/BANER.png" alt="">
+                <h2> Krosno Fried Chicken</h2>
+            </div>
+        </div>
+        <div class="col text-right mr-3">
+            <h6 class="font-weight-bolder" sec:authorize="isAuthenticated()">Witaj, <span
+                    sec:authentication="name"></span></h6>
+
+            <div class="col mr-5 mb-3">
+                <div class="row flex-row-reverse">
+                    <form method="POST" th:action="@{/logout}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_USER')">
+                        <input type="submit" value="Logout" class="btn btn-danger " />
+                    </form>
+                    <a sec:authorize="hasRole('ROLE_USER')" href="/basket" class="btn btn-danger mr-3">Koszyk  <strong th:text="${amount}"/> <i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="container-flow">
+    <div class="row">
+        <div class="col">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link"  href="/" >Home</a>
+                    <a class="nav-item nav-link" sec:authorize="!hasRole('ROLE_ADMIN')" href="/print_all_product">Produkty</a>
+                    <a class="nav-item nav-link" sec:authorize="!hasRole('ROLE_ADMIN')" href="/print_all_Set">Zestawy</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_product">Dodaj nowy produkty</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_Set">Dodaj nowy zestaw</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_admin">Rejestracja </a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_USER')" href="/menu">MENU</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasAnyRole('ROLE_USER','ROLE_ADMIN')" href="/editUser">Edycja</a>
+                    <a class="nav-item nav-link"  sec:authorize="!isAuthenticated()" href="/menu" >MENU</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+<!--Panel do logowanie lub rejestracji -->
+
+<div sec:authorize="!isAuthenticated()" class="container mt-40">
+    <h3 class="text-center">Aby złożyć zamówienie zaloguj się lub zarejestruj</h3>
+    <div class="row mt-30">
+        <div class="col">
+            <div class="box20">
+                <img src="https://res.cloudinary.com/glovoapp/w_1200,f_auto,q_auto/Stores/bvfubddea71f5dtdu3qt" alt="">
+                <div class="box-content">
+                    <h3 class="title">Logowanie</h3>
+                    <span class="post">Zaloguj się by móc złożyć zamównienie na najlepszego kurczaka </span>
+                </div>
+                <ul class="icon">
+                    <li><a href="/login"><i class="fa fa-plus"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col">
+            <div class="box20">
+                <img src="https://fintek.pl/static/dec36245ea5ae8be96a4f85c08632f23/Zamow-jedzenie-w-aplikacji-KFC-i-odbierz-je-bez-kolejki-w-restauracji.jpg" alt="">
+                <div class="box-content">
+                    <h3 class="title">Rejestracja</h3>
+                    <span class="post">Zarejestruje się by móc złożyć zamównienie na najlepszego kurczaka</span>
+                </div>
+                <ul class="icon">
+                    <li><a href="add_customer"><i class="fa fa-plus"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div sec:authorize="hasRole('ROLE_ADMIN')" class="container mt-40">
+    <h3 class="text-center">Baza dostępnych danych</h3>
+    <div class="row mt-30">
+        <div class="col">
+            <div class="box8">
+                <img src="https://www.newsweek.pl/kupony-rabatowe/static/medium/34221/file_name/KFC_kupony_BOX_Newsweek.jpg">
+                <h3 class="title">Produkty</h3>
+                <div class="box-content">
+                    <ul class="icon">
+                        <li><a href="/print_all_product"><i class="fa fa-search"></i> </a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="box8">
+                <img src="https://static.wirtualnemedia.pl/media/top/pepsi-spot-kfc655.png">
+                <h3 class="title">Zestawy</h3>
+                <div class="box-content">
+                    <ul class="icon">
+                        <li><a href="/print_all_Set"><i class="fa fa-search"></i> </a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="box8">
+                <img src="http://bestjquery.com/tutorial/hover-effect/demo148/images/img-3.jpg">
+                <h3 class="title">Lista klientów</h3>
+                <div class="box-content">
+                    <ul class="icon">
+                        <li><a href="/print_all_customer"><i class="fa fa-search"></i> </a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div sec:authorize="hasRole('ROLE_ADMIN')" class="container mt-40">
+    <h3 class="text-center">Analizy </h3>
+    <div class="row mt-30">
+        <div class="col">
+            <div class="box8">
+                <img src="https://www.newsweek.pl/kupony-rabatowe/static/medium/34221/file_name/KFC_kupony_BOX_Newsweek.jpg">
+                <h3 class="title">Produkty</h3>
+                <div class="box-content">
+                    <ul class="icon">
+                        <li><a href="/printAllAssortment"><i class="fa fa-search"></i> </a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="box8">
+                <img src="https://static.wirtualnemedia.pl/media/top/pepsi-spot-kfc655.png">
+                <h3 class="title">Szczegóły Zamówieni</h3>
+                <div class="box-content">
+                    <ul class="icon">
+                        <li><a href="/printDetailsOrder"><i class="fa fa-search"></i> </a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+            <div class="box8">
+                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Funitedstatesmapz.com%2Fwp-content%2Fuploads%2F2017%2F03%2FKFC.jpg&f=1&nofb=1">
+                <h3 class="title">Zamówienia</h3>
+                <div class="box-content">
+                    <ul class="icon">
+                        <li><a href="/printProfit"><i class="fa fa-search"></i> </a> </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</div>
+</div>
+<div sec:authorize="hasRole('ROLE_USER')" class="container mt-40">
+    <h2 class="ml-40"> Odwiedź nas na:</h2>
+<aul>
+    <li><a href="https://www.facebook.com/kfcpolska/"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+    <li><a href="https://twitter.com/kfc"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+    <li><a href="https://kfc.pl/main/home/aboutUs"><i class="fa fa-info" aria-hidden="true"></i></a></li>
+    <li><a href="https://www.linkedin.com/in/raj-kumar-web-designer/"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+    <li><a href="https://www.instagram.com/kfc_polska/?hl=pl"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+</aul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+</body>
+</html>

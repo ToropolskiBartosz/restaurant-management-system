@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html lang="pl"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Witaj KFC</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/main2.css">
+    <link rel="stylesheet" href="styles/mainL.css">
+</head>
+
+<body class="bg-white">
+<div class="container-flow">
+    <div class="row">
+        <div class="col ml-3">
+            <div class="row">
+                <img src="img/BANER.png" alt="">
+                <h2> Krosno Fried Chicken KFC</h2>
+            </div>
+        </div>
+        <div class="col text-right mr-3">
+            <h6 class="font-weight-bolder" sec:authorize="isAuthenticated()">Witaj, <span
+                    sec:authentication="name"></span></h6>
+
+            <div class="col mr-5 mb-3">
+                <div class="row flex-row-reverse">
+                    <form method="POST" th:action="@{/logout}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_USER')">
+                        <input type="submit" value="Logout" class="btn btn-danger " />
+                    </form>
+                    <a sec:authorize="hasRole('ROLE_USER')" href="/basket" class="btn btn-danger mr-3">Koszyk<i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="container-flow">
+    <div class="row">
+        <div class="col">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link"  href="/" >Home</a>
+                    <a class="nav-item nav-link"  href="/print_all_product">Produkty</a>
+                    <a class="nav-item nav-link"  href="/print_all_Set">Zestawy</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/print_all_customer">Lista klientów</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_product">Dodaj nowy produkty</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_USER')" href="/menu">MENU</a>
+                    <a class="nav-item nav-link"  sec:authorize="!isAuthenticated()" href="/menu" >MENU</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <form action="#" method="POST" th:object="${kfcSetListData}">
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="nazwa">Nazwa</label>
+                <input type="text" th:field="${kfcSetListData.name}" value="" class="form-control" name="nazwa" id="nazwa" placeholder="nazwa" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label>Główny produkt</label>
+                <select class="form-control" th:field="${kfcSetListData.mainProduct}">
+                    <option
+                            th:each="productMainName: ${productsMainName}"
+                            th:value="${productMainName}"
+                            th:text="${productMainName}" >
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label>Przystawka</label>
+                <select class="form-control" th:field="${kfcSetListData.secondProduct}">
+                    <option
+                            th:each="productSecondName: ${productsSecondName}"
+                            th:value="${productSecondName}"
+                            th:text="${productSecondName}" >
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label>Napój</label>
+                <select class="form-control" th:field="${kfcSetListData.drink}">
+                    <option
+                            th:each="productDrinkName: ${productsDrinkName}"
+                            th:value="${productDrinkName}"
+                            th:text="${productDrinkName}" >
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="cena">Cena</label>
+                <input type="number" th:field="${kfcSetListData.price}" value="" class="form-control" name="cena" id="cena" min="1" max="99" step="0.01" placeholder="cena" required>
+            </div>
+        </div>
+
+
+        <button type="submit" class="btn btn-danger">Zapisz</button> </br> </br>
+
+
+    </form>
+</div>
+
+
+</body>
+</html>

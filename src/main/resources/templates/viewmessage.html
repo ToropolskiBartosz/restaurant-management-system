@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html lang="pl"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Witaj KFC</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900|Roboto:100,300,400,500,700,900" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/main2.css">
+    <link rel="stylesheet" href="styles/mainL.css">
+    <link rel="stylesheet" href="styles/message.css">
+</head>
+
+<body class="bg-white">
+<div class="container-flow">
+    <div class="row">
+        <div class="col ml-3">
+            <div class="row">
+                <img src="img/BANER.png" alt="">
+                <h2> Krosno Fried Chicken KFC</h2>
+            </div>
+        </div>
+        <div class="col text-right mr-3">
+            <h6 class="font-weight-bolder" sec:authorize="isAuthenticated()">Witaj, <span
+                    sec:authentication="name"></span></h6>
+
+            <div class="col mr-5 mb-3">
+                <div class="row flex-row-reverse">
+                    <form method="POST" th:action="@{/logout}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_USER')">
+                        <input type="submit" value="Logout" class="btn btn-danger " />
+                    </form>
+                    <a sec:authorize="hasRole('ROLE_USER')" href="/basket" class="btn btn-danger mr-3">Koszyk<i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="container-flow">
+    <div class="row">
+        <div class="col">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link"  href="/" >Home</a>
+                    <a class="nav-item nav-link"  href="/print_all_product">Listę produktów</a>
+                    <a class="nav-item nav-link"  href="/print_all_Set">Listę zestawów</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/print_all_customer">Lista klientów</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_product">Dodaj nowy produkty</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_Set">Dodaj nowy zestaw</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_USER')" href="/menu">MENU</a>
+                    <a class="nav-item nav-link"  sec:authorize="!isAuthenticated()" href="/menu" >MENU</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="error-wrapper">
+        <div class="man-icon"></div>
+        <h3 class="title" th:text="${header}"/>
+        <p class="info" th:text="${message}" />
+        <a type="button" class="home-btn" href="/" >HOME</a>
+    </div>
+</div>
+
+</body>
+</html>
