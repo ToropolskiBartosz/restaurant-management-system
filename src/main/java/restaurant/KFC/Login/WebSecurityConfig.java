@@ -22,6 +22,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -56,7 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/addProduct").hasAuthority("ROLE_USER")
                 .antMatchers("/addKfcSet").hasAuthority("ROLE_USER")
                 .antMatchers("/basket").hasAuthority("ROLE_USER")
-                .antMatchers("/editUser").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
+                .antMatchers("/editUser/*").hasAnyAuthority("ROLE_USER","ROLE_ADMIN")
                 .anyRequest().hasAuthority("ROLE_ADMIN")
                 .and()
                 // .formLogin()

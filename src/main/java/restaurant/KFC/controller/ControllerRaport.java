@@ -1,6 +1,5 @@
 package restaurant.KFC.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,15 +17,20 @@ import java.util.List;
 
 @Controller
 public class ControllerRaport {
-
-    @Autowired
     ProductRepository productRepository;
-    @Autowired
     KFC_SetRepository kfc_setRepository;
-    @Autowired
     OrderKFCRepository orderKFCRepository;
-    @Autowired
     ProductInOrderRepository productInOrderRepository;
+
+    public ControllerRaport(ProductRepository productRepository,
+                            KFC_SetRepository kfc_setRepository,
+                            OrderKFCRepository orderKFCRepository,
+                            ProductInOrderRepository productInOrderRepository) {
+        this.productRepository = productRepository;
+        this.kfc_setRepository = kfc_setRepository;
+        this.orderKFCRepository = orderKFCRepository;
+        this.productInOrderRepository = productInOrderRepository;
+    }
 
     @RequestMapping(value = "/printAllAssortment",method = RequestMethod.GET)
     public String printAll(Model model)

@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html lang="pl"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Witaj KFC</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/main2.css">
+    <link rel="stylesheet" href="styles/mainL.css">
+</head>
+
+<body class="bg-white">
+<div class="container-flow">
+    <div class="row">
+        <div class="col ml-3">
+            <div class="row">
+                <img src="img/BANER.png" alt="">
+                <h2> Krosno Fried Chicken KFC</h2>
+            </div>
+        </div>
+        <div class="col text-right mr-3">
+            <h6 class="font-weight-bolder" sec:authorize="isAuthenticated()">Witaj, <span
+                    sec:authentication="name"></span></h6>
+
+            <div class="col mr-5 mb-3">
+                <div class="row flex-row-reverse">
+                    <form method="POST" th:action="@{/logout}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_USER')">
+                        <input type="submit" value="Logout" class="btn btn-danger " />
+                    </form>
+                    <a sec:authorize="hasRole('ROLE_USER')" href="/basket" class="btn btn-danger mr-3">Koszyk<i class="fa fa-shopping-basket" aria-hidden="true"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="container-flow">
+    <div class="row">
+        <div class="col">
+            <nav>
+                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link"  href="/" >Home</a>
+                    <a class="nav-item nav-link"  href="/print_all_product">Listę produktów</a>
+                    <a class="nav-item nav-link"  href="/print_all_Set">Listę zestawów</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/print_all_customer">Lista klientów</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_product">Dodaj nowy produkty</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_Set">Dodaj nowy zestaw</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_USER')" href="/menu">MENU</a>
+                    <a class="nav-item nav-link"  sec:authorize="!isAuthenticated()" href="/menu" >MENU</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <form action="#" th:action="@{/editCustomer}" method="POST" th:object="${customerData}">
+        <input type="hidden" th:value="${customerData.id}" name="id" >
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="imie">Imie</label>
+                <input type="text" th:field="${customerData.firstName}" value="" class="form-control" name="imie" id="imie" placeholder="Imie" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="Nazwisko">Nazwisko</label>
+                <input type="text" th:field="${customerData.lastName}" value=""
+                       class="form-control" name="Nazwisko" id="Nazwisko" placeholder="Nazwisko">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="eMail">E-mail</label>
+                <input type="email" th:field="${customerData.eMail}" value=""
+                       class="form-control" name="eMail" id="eMail" placeholder="eMail" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="password">Hasło</label>
+                <input type="password" th:field="${customerData.password}"
+                       class="form-control" name="password" id="password" placeholder="password" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-2">
+                <label for="Wiek">Wiek</label>
+                <input type="number" th:field="${customerData.age}" value=""
+                       class="form-control" name="Wiek" id="Wiek" min="6" max="99" placeholder="Wiek" required>
+            </div>
+            <div class="form-group col-4">
+                <label for="Numer telefonu">Numer telefonu</label>
+                <input type="tel" th:field="${customerData.phoneNumber}" value=""
+                       class="form-control" name="Numer telefonu"  pattern="[0-9]{9}" id="Numer telefonu" min="9" max="12" placeholder="Numer telefonu" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-3">
+                <label for="Miasto">Miasto</label>
+                <input type="text" th:field="${customerData.city}" value=""
+                       class="form-control" name="Miasto" id="Miasto" placeholder="Miasto">
+            </div>
+            <div class="form-group col-3">
+                <label for="Adres">Adres</label>
+                <input type="text" th:field="${customerData.adres}" value=""
+                       class="form-control" name="Adres" id="Adres" placeholder="Adres">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-danger">Zapisz</button>
+    </form>
+</div>
+
+
+</body>
+</html>

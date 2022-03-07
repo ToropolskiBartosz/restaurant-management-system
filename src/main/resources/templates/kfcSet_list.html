@@ -86,11 +86,8 @@
                     </option>
                 </select> </td>
                 <td> <b  th:utext="${product.price}">...</b> </td>
-                <td sec:authorize="hasRole('ROLE_ADMIN')"> <a th:href="@{/editKFCSet(
-                    productId=${product.id},
-                    productName=${product.name},
-                    productPrice=${product.price},
-                    )}" class="btn btn-danger">Edytuj</a> </td>
+                <td sec:authorize="hasRole('ROLE_ADMIN')"> <a th:href="@{/editKFCSet/{id}(id=${product.id})}"
+                                                              class="btn btn-danger">Edytuj</a> </td>
 
             </tr>
             </tbody>

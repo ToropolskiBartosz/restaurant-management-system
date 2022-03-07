@@ -34,7 +34,7 @@ public class CustomerDataLoader implements ApplicationRunner {
         customerRepository.save(customer);
 
         customerRepository.save(new Customer("David","Stary",
-                                                "davidStary@onet.pl",PasswordEncoder.coding("haslo"),
+                                                "davidStary@onet.pl",PasswordEncoder.coding("h"),
                                                 25,"890312456",
                                             "Warszawa","Mokotów 136"));
 

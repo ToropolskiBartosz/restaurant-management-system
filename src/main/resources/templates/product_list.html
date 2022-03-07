@@ -87,14 +87,8 @@
                 <td> <b  th:utext="${product.price}">...</b> </td>
                 <td> <b  th:utext="${product.size}">...</b> </td>
                 <td> <b  th:utext="${product.kcal}">...</b> </td>
-                <td sec:authorize="hasRole('ROLE_ADMIN')"> <a th:href="@{/editProduct(
-                    productId=${product.id},
-                    productName=${product.name},
-                    productCategory=${product.category},
-                    productPrice=${product.price},
-                    productSize=${product.size},
-                    productKcal=${product.kcal},
-                    )}" class="btn btn-danger">Edytuj</a> </td>
+                <td sec:authorize="hasRole('ROLE_ADMIN')"> <a th:href="@{/editProduct/{id}(id=${product.id})}"
+                                                              class="btn btn-danger">Edytuj</a> </td>
             </tr>
             </tbody>
         </table>

@@ -47,8 +47,8 @@
                     <a class="nav-item nav-link"  href="/" >Home</a>
                     <a class="nav-item nav-link"  href="/print_all_product">Produkty</a>
                     <a class="nav-item nav-link"  href="/print_all_Set">Zestawy</a>
+                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/print_all_customer">Lista klientów</a>
                     <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_product">Dodaj nowy produkty</a>
-                    <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_ADMIN')" href="/add_Set">Dodaj nowy zestaw</a>
                     <a class="nav-item nav-link"  sec:authorize="hasRole('ROLE_USER')" href="/menu">MENU</a>
                     <a class="nav-item nav-link"  sec:authorize="!isAuthenticated()" href="/menu" >MENU</a>
                 </div>
@@ -57,51 +57,67 @@
     </div>
 </div>
 
+<div class="container-fluid">
+    <form action="#" th:action="@{/editKFCSet}" method="POST" th:object="${kfcSetListData}">
+        <input type="hidden" th:value="${kfcSetListData.id}" name="id">
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="nazwa">Nazwa</label>
+                <input type="text" th:field="${kfcSetListData.name}" value="" class="form-control" name="nazwa" id="nazwa" placeholder="nazwa" required>
+            </div>
+        </div>
 
-<div class="container">
-    <h4>   <strong th:text="${header}"/>  </h4>
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label>Główny produkt</label>
+                <select class="form-control" th:field="${kfcSetListData.mainProduct}">
+                    <option
+                            th:each="productMainName: ${productsMainName}"
+                            th:value="${productMainName}"
+                            th:text="${productMainName}" >
+                    </option>
+                </select>
+            </div>
+        </div>
 
-</div>
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label>Przystawka</label>
+                <select class="form-control" th:field="${kfcSetListData.secondProduct}">
+                    <option
+                            th:each="productSecondName: ${productsSecondName}"
+                            th:value="${productSecondName}"
+                            th:text="${productSecondName}" >
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label>Napój</label>
+                <select class="form-control" th:field="${kfcSetListData.drink}">
+                    <option
+                            th:each="productDrinkName: ${productsDrinkName}"
+                            th:value="${productDrinkName}"
+                            th:text="${productDrinkName}" >
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-6">
+                <label for="cena">Cena</label>
+                <input type="number" th:field="${kfcSetListData.price}" value="" class="form-control" name="cena" id="cena" min="1" max="99" step="0.01" placeholder="cena" required>
+            </div>
+        </div>
 
 
-<div class="container">
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-            <tr  class="active">
-                <th>Imię</th>
-                <th>Nazwisko</th>
-                <th>Wiek</th>
-                <th>Telefon</th>
-                <th>Miasto</th>
-                <th>Adres</th>
-                <th>Email</th>
+        <button type="submit" class="btn btn-danger">Zapisz</button> </br> </br>
 
-            </tr>
 
-            </thead>
-            <tbody>
-            <tr th:each ="customer : ${customersList}">
-
-                <td> <b  th:utext="${customer.firstName}">...</b> </td>
-                <td> <b  th:utext="${customer.lastName}">...</b> </td>
-                <td> <b  th:utext="${customer.age}">...</b> </td>
-                <td> <b  th:utext="${customer.phoneNumber}">...</b> </td>
-                <td> <b  th:utext="${customer.city}">...</b> </td>
-                <td> <b  th:utext="${customer.adres}">...</b> </td>
-                <td> <b  th:utext="${customer.eMail}">...</b> </td>
-                <td>
-                    <a th:href="@{/editCustomer/{id}(
-                    id=${customer.id}
-                    )}" class="btn btn-danger">Edytuj</a>
-
-                </td>
-
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
+    </form>
 </div>
 
 

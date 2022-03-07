@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class KFCSetListData {
+    long id;
     String name;
     String price;
     String mainProduct;

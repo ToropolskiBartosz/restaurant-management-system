@@ -28,7 +28,7 @@ public class Customer {
     private boolean enabled;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
-    private Set<OrderKFC> order;
+    private Set<OrderKFC> order = new HashSet<OrderKFC>();
 
     protected Customer(){}
 
@@ -43,8 +43,6 @@ public class Customer {
         this.adres = adres;
         this.role = "ROLE_USER";
         this.enabled = true;
-        order = new HashSet<OrderKFC>();
-
     }
 
     public Long getId() {

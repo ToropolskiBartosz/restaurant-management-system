@@ -13,7 +13,7 @@ public class KFCSet {
     private String name;
     private double price;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<Product> product;
 
     @OneToMany(mappedBy = "kfcSet",fetch = FetchType.EAGER)
@@ -67,5 +67,10 @@ public class KFCSet {
 
     public void setProduct(Set<Product> product) {
         this.product = product;
+    }
+
+    public void addProduct(Product product){
+        this.getProduct().add(product);
+        product.getKfcSet().add(this);
     }
 }
