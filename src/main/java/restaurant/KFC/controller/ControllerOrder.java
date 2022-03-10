@@ -21,7 +21,6 @@ import static java.util.Objects.isNull;
 
 @Controller
 public class ControllerOrder {
-    private OrderKFC orderKFC;
     private final OrderService service;
 
     public ControllerOrder(OrderService service) {
@@ -32,8 +31,8 @@ public class ControllerOrder {
     public String menu(Model model)
     {
         try {
-            orderKFC = service.createOrder();
-            model.addAttribute("amount", service.getAmount(orderKFC));
+            service.createOrder();
+            model.addAttribute("amount", service.getAmount());
             model.addAttribute("header", "Lista produktow");
             model.addAttribute("productList", service.getAll());
             model.addAttribute("header2", "Lista Zestawów");
@@ -50,8 +49,8 @@ public class ControllerOrder {
     public String addProductToOrder(@RequestParam(name = "productId")String id, Model model)
     {
         try{
-            service.addProductToOrder(orderKFC,id);
-            model.addAttribute("amount", service.getAmount(orderKFC));
+            service.addProductToOrder(id);
+            model.addAttribute("amount", service.getAmount());
             model.addAttribute("header","Lista produktow");
             model.addAttribute("productList",service.getAll());
             model.addAttribute("header2","Lista Zestawów");
@@ -67,7 +66,7 @@ public class ControllerOrder {
 
     @RequestMapping(value = "/addKfcSet")
     public String addKfcSet(@RequestParam(name = "nameSet")String name, Model model){
-            model.addAttribute("amount", service.getAmount(orderKFC));
+            model.addAttribute("amount", service.getAmount());
             model.addAttribute("kfcSetList", name);
             model.addAttribute("productInSet", service
                     .getListProduct(name, Categories.MAIN.getDescription()));
@@ -84,9 +83,9 @@ public class ControllerOrder {
     public String addKfcSet(@ModelAttribute("postData") KFCSetListData postData,
                             Model model) {
         try{
-            service.addSetToOrder(orderKFC,postData);
+            service.addSetToOrder(postData);
 
-            model.addAttribute("amount", service.getAmount(orderKFC));
+            model.addAttribute("amount", service.getAmount());
             model.addAttribute("header","Lista produktow");
             model.addAttribute("productList",service.getAll());
             model.addAttribute("header2","Lista Zestawów");
@@ -105,20 +104,20 @@ public class ControllerOrder {
     public String basket( Model model)
     {
         try{
-            orderKFC = service.createOrder();
+            service.createOrder();
             //--------------------------------------------------------
-            if(isNull(orderKFC)){
+            if(isNull(service.getCurrentOrder())){
                 model.addAttribute("header", "Koszyk jest pusty");
                 return "viewmessage";
             }else{
-                List<ProductInOrder> productsInOrder = service.getProductsInOrder(orderKFC);
-                List<ProductInOrder> kfcSetsInOrder = service.getKfcSetInOrder(orderKFC);
+                List<ProductInOrder> productsInOrder = service.getProductsInOrder();
+                List<ProductInOrder> kfcSetsInOrder = service.getKfcSetInOrder();
                 if(productsInOrder.size()==0 & kfcSetsInOrder.size()==0){
                     model.addAttribute("header", "Koszyk jest pusty");
                     return "viewmessage";
                 }else{
 
-                    model.addAttribute("amount", service.getAmount(orderKFC));
+                    model.addAttribute("amount", service.getAmount());
                     model.addAttribute("header","Lista wszystkich produktow");
                     model.addAttribute("priceFinal",service.getPrice(productsInOrder,kfcSetsInOrder));
                     model.addAttribute("productsInOrder",productsInOrder );
@@ -139,13 +138,13 @@ public class ControllerOrder {
 
         try{
             service.delete(id);
-            List<ProductInOrder> productsInOrder = service.getProductsInOrder(orderKFC);
-            List<ProductInOrder> kfcSetsInOrder = service.getKfcSetInOrder(orderKFC);
+            List<ProductInOrder> productsInOrder = service.getProductsInOrder();
+            List<ProductInOrder> kfcSetsInOrder = service.getKfcSetInOrder();
             if(productsInOrder.isEmpty() & kfcSetsInOrder.isEmpty()){
                 model.addAttribute("header", "Koszyk jest pusty");
                 return "viewmessage";
             }else{
-                model.addAttribute("amount", service.getAmount(orderKFC));
+                model.addAttribute("amount", service.getAmount());
                 model.addAttribute("header","Lista wszystkich produktow"); //Dodanie obiektu do pamieci lokalnej modelu
                 model.addAttribute("priceFinal",service.getPrice(productsInOrder,kfcSetsInOrder));
                 model.addAttribute("productsInOrder",productsInOrder );

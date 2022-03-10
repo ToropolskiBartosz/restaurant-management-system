@@ -37,7 +37,8 @@ public class OrderService {
         return productRepository.findAll();
     }
 
-    public int getAmount(OrderKFC orderKFC) {
+    public int getAmount() {
+        OrderKFC orderKFC = getCurrentOrder();
         List< ProductInOrder > proInOrd = productInOrderRepository.findByOrderId(orderKFC.getId());
         int amount = 0;
         amount = proInOrd.size();
@@ -53,7 +54,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderKFC createOrder() {
+    public void createOrder() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
@@ -74,14 +75,28 @@ public class OrderService {
             //Wprowadzenie zamówienia do klienta
             customerLogin.get(0).getOrder().add(orderKFC);
             customerRepository.save(customerLogin.get(0));
-            return orderKFC;
-        } else {
-            return notFinishedOrder.get(0);
         }
     }
 
+    public OrderKFC getCurrentOrder(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        Object user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = ((UserDetails) user).getUsername();
+        List<Customer> customerLogin = customerRepository.findByeMail(username);
+
+        //Stworzenie Zamówienia i przypięcie do niego klienta -------------MA BYC CALY CZAS ---------
+        return orderKFCRepository.findByFinishedAndCustomerId
+                (false, customerLogin.get(0).getId()).stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("The order wasn't created by system"));
+    }
+
+
     @Transactional
-    public void addProductToOrder(OrderKFC orderKFC,String id) {
+    public void addProductToOrder(String id) {
+        OrderKFC orderKFC = getCurrentOrder();
         //Szukanie dodawanego produktu
         Long productId = Long.parseLong(id);
         Optional<Product> addProduct = productRepository.findById(productId);
@@ -102,46 +117,49 @@ public class OrderService {
 
     //Metoda służąca do pobrania listy produktów w danym zestawie
     @Transactional
-    public void addSetToOrder(OrderKFC orderKFC,KFCSetListData postData) {
+    public void addSetToOrder(KFCSetListData postData) {
         List<Long> ksfSetMain_id = getCollect(postData.getMainProduct());
         List<Long> ksfSetSecond_id = getCollect(postData.getSecondProduct());
         List<Long> ksfSetDrink_id = getCollect(postData.getDrink());
-
+        OrderKFC orderKFC = getCurrentOrder();
         //WYSZUKANIE NASZEGO ZESTAWU
         ksfSetMain_id.retainAll(ksfSetSecond_id);
         ksfSetMain_id.retainAll(ksfSetDrink_id);
 
         //POBRANIE ZESTAWU
-        Optional<KFCSet> addKfcSet = kfc_setRepository.findById(ksfSetMain_id.get(0));
-        System.out.println(addKfcSet.get().getName()+" "+ksfSetMain_id);
+        KFCSet addKfcSet = kfc_setRepository.findById(ksfSetMain_id.get(0))
+                .orElseThrow(() -> new IllegalArgumentException("Set with give ID not found"));
+        System.out.println(addKfcSet.getName()+" "+ksfSetMain_id);
 
         //Tworzenie wiersza z produktem
         ProductInOrder productInOrder = new ProductInOrder();
         //Dodanie produktu do koszyka
         productInOrder.setOrder(orderKFC);
-        productInOrder.setKfcSet(addKfcSet.get());
+        productInOrder.setKfcSet(addKfcSet);
 
         orderKFC.getProductInOrder().add(productInOrder);
-        addKfcSet.get().getProductInOrder().add(productInOrder);
+        addKfcSet.getProductInOrder().add(productInOrder);
 
         productInOrderRepository.save(productInOrder);
-        kfc_setRepository.save(addKfcSet .get());
+        kfc_setRepository.save(addKfcSet);
         orderKFCRepository.save(orderKFC);
     }
 
-    public List<ProductInOrder> getProductsInOrder(OrderKFC orderKFC) {
+    public List<ProductInOrder> getProductsInOrder() {
+        OrderKFC orderKFC = getCurrentOrder();
         return productInOrderRepository.
                 findByOrderIdAndProductNotNull(orderKFC.getId());
+    }
+
+    public List<ProductInOrder> getKfcSetInOrder() {
+        OrderKFC orderKFC = getCurrentOrder();
+        return productInOrderRepository.
+                findByOrderIdAndKfcSetNotNull(orderKFC.getId());
     }
 
     public void delete(String id) {
         Long longId = Long.parseLong(id);
         productInOrderRepository.deleteById(longId);
-    }
-
-    public List<ProductInOrder> getKfcSetInOrder(OrderKFC orderKFC) {
-        return productInOrderRepository.
-                findByOrderIdAndKfcSetNotNull(orderKFC.getId());
     }
 
     private List<Long> getCollect(String postData) {
